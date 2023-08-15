@@ -80,6 +80,7 @@ class mplDataFramePlot(MplCanvas):
         lgd = self.axes.legend()
         self.df_dict[key] = {"key":key, 'df': df, 'line': line, 'unflagged':unflagged, 'flagged':flagged}
         self.axes.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
+        self.axes.grid(True)
         
 
     def compute_initial_figure(self):
