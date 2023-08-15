@@ -14,6 +14,7 @@ class MplCanvas(FigureCanvas):
         self.fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = self.fig.add_subplot(111)
         self.data = data
+        self.pick_radius = 3
         self.preflagged = False
         self.df_dict = {}
         #self.pick_event_occurred = pyqtSignal(bool)
@@ -62,21 +63,21 @@ class mplDataFramePlot(MplCanvas):
             y_flag_show = df[df["flag"]==9]["ozone"]
         
         line, = self.axes.plot(x, y, 
-                      color=color, 
-                      alpha=0.7, 
-                      label=key)
+                      color = color, 
+                      alpha = 0.7, 
+                      label = key)
         unflagged, = self.axes.plot(x, y, 
-                      marker="o", 
-                      color=color, 
-                      alpha=0.7,
-                      picker=True, 
-                      pickradius=1)
+                      marker = "o", 
+                      color = color, 
+                      alpha = 0.7,
+                      picker = True, 
+                      pickradius = self.pick_radius)
         flagged, = self.axes.plot(x_flag_show, y_flag_show,
-                      marker="x",
-                      linestyle='', 
-                      color=d_color, 
-                      picker=True, 
-                      pickradius=1)
+                      marker = "x",
+                      linestyle = '', 
+                      color = d_color, 
+                      picker = True, 
+                      pickradius = self.pick_radius)
         lgd = self.axes.legend()
         self.df_dict[key] = {"key":key, 'df': df, 'line': line, 'unflagged':unflagged, 'flagged':flagged}
         self.axes.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
