@@ -14,7 +14,7 @@ class MplCanvas(FigureCanvas):
         self.fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = self.fig.add_subplot(111)
         self.data = data
-        self.preflagged = True
+        self.preflagged = False
         self.df_dict = {}
         #self.pick_event_occurred = pyqtSignal(bool)
         
@@ -117,16 +117,21 @@ class mplDataFramePlot(MplCanvas):
     def update_data_line(self, key):
         df = self.data[key]["df"]
         self.df_dict[key]["df"] = df
+
         x = df[df["flag"]==0]["date_num"].to_numpy()
         y = df[df["flag"]==0]["ozone"].to_numpy()
-
-        x_flag = df[df["flag"]!=0]["date_num"].to_numpy()
-        y_flag = df[df["flag"]!=0]["ozone"].to_numpy()
+                
+        if self.preflagged:
+            x_flag_show = df[df["flag"]!=0]["date_num"].to_numpy()
+            y_flag_show = df[df["flag"]!=0]["ozone"].to_numpy()
+        else:
+            x_flag_show = df[df["flag"]==9]["date_num"].to_numpy()
+            y_flag_show = df[df["flag"]==9]["ozone"].to_numpy()
         
 
         self.df_dict[key]["line"].set_data(x,y)
         self.df_dict[key]["unflagged"].set_data(x,y)
-        self.df_dict[key]["flagged"].set_data(x_flag,y_flag)
+        self.df_dict[key]["flagged"].set_data(x_flag_show, y_flag_show)
         self.fig.canvas.draw()
  
  

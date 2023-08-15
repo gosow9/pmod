@@ -57,7 +57,7 @@ def saveButton(self):
     
 def checkbox(self):
     self.show_pre_flagged = QCheckBox('Show preflagged data', self)
-    self.show_pre_flagged.setChecked(True)
+    self.show_pre_flagged.setChecked(False)
     self.show_brewer_checkbox = QCheckBox('Show Brewer devices', self)
     self.show_brewer_checkbox.setChecked(True)
     self.show_dobson_checkbox = QCheckBox('Show Dobson devices', self)
