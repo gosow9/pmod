@@ -4,22 +4,15 @@ import pprint
 import pandas as pd
 import numpy as np
 import matplotlib.dates as mdates
+from ..config import ConfigHandler
 from typing import Any, Dict
 from datetime import datetime
 from collections import deque
 from pathlib import PurePosixPath
 
+handler = ConfigHandler()
+default_header = handler.get("brewer.header")
 
-default_header = ["Type",
-                  "Time(UTC)",
-                  "Temp",
-                  "Airmass",
-                  "Ozone",
-                  "Ozone_error",
-                  "SO2",
-                  "SO2_error",
-                  "Flag"
-                  ]
 
 
 

@@ -1,38 +1,13 @@
 from pathlib import PurePosixPath
 from typing import Any, Dict
+from ..config import ConfigHandler
 import pandas as pd
 import numpy as np
 import os
 import matplotlib.dates as mdates
 
-default_header = ["iii", 
-          "t",  
-          "yyyymmdd",
-          "ss",
-          "tt",
-          "timeC",
-          "rvalC",
-          "sdevC",
-          "timeD",
-          "rvalD",
-          "sdevD",
-          "timeA",
-          "rvalA",
-          "sdevA",
-          "flag1",
-          "flag2",
-          "flag3",
-          "muC",
-          "muD",
-          "muA",
-          "OzC",
-          "OzD",
-          "OzA",
-          "OzAD",
-          "OzCD",
-          "OzAC"]
-
-
+handler = ConfigHandler()
+default_header = handler.get("dobson.header")
 
 
 class Dobson:
@@ -90,8 +65,6 @@ class Dobson:
         df["OzAD"] = df["OzAD"].astype(float)
         df["OzCD"] = df["OzCD"].astype(float)
         df["OzAC"] = df["OzAC"].astype(float)
-        
-        
         return df
     
     def get_df(self)-> pd.DataFrame:

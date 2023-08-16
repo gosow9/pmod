@@ -1,15 +1,26 @@
 from .brewer_txt import Brewer
 from .dobson_txt import Dobson
+from ..config import ConfigHandler
 import pandas as pd
 import os
 import glob
 import pandas as pd
 import matplotlib.dates as mdates
 
-BREWER_PATH = r"\\ad.pmodwrc.ch\\Institute\\Departments\\WRC\\OZONE\\B_Brewer\\DataPostProcessing\\ProcessedData"
-DOBSON_PATH = r"\\ad.pmodwrc.ch\\Institute\\Departments\\WRC\\OZONE\\A_Dobsons\\DataPostProcessing\\ProcessedData"
+handler = ConfigHandler()
+BREWER_PATH = handler.get("brewer.path")
+BREWER_KEY = handler.get("brewer.key")
+if not os.path.exists(BREWER_PATH):
+            raise FileNotFoundError(f"Path not found: {BREWER_PATH}")
+        
+DOBSON_PATH = handler.get("dobson.path")
+if not os.path.exists(DOBSON_PATH):
+            raise FileNotFoundError(f"Path not found: {DOBSON_PATH}")
+DOBSON_KEY = handler.get("dobson.key")
 
-devices = {"Dobson":["051","062","101"], "Brewer":["040","072","156","163"]}
+
+devices = {DOBSON_KEY : handler.get("dobson.devices"),
+           BREWER_KEY : handler.get("brewer.devices")}
 
 
 def get_files_of_type(start_folder, file_extension):
@@ -32,7 +43,7 @@ def get_files_of_type(start_folder, file_extension):
 def create_brewer_path(year, month, day, device, level, cal):
     n = r"\\"
     filename = "DS" + str(pd.Timestamp(year=year,month=month,day=day).dayofyear)+str(year%100)+"."+ device
-    path = BREWER_PATH + n + level + n + device + n + cal + n + str(year) + n + filename
+    path = os.path.join(BREWER_PATH, level, device, cal, str(year), filename)
     if os.path.exists(path):
         return path 
     else:
@@ -53,7 +64,7 @@ def load_day(year, month, day, cal, level, devices=devices):
     dataframes = {}
     for key, val in devices.items():
         for device in val:
-            if key == "Dobson":
+            if key == DOBSON_KEY:
                 path = create_dobson_path(year,month,day,device,level,cal)
                 if path:
                     dfs = Dobson(path)
@@ -66,7 +77,7 @@ def load_day(year, month, day, cal, level, devices=devices):
                                                  "obj": dfs}
                     
                     
-            if key == "Brewer": 
+            if key == BREWER_KEY: 
                 path = create_brewer_path(year,month,day,device,level,cal)
                 if path:
                     dfs = Brewer(path)

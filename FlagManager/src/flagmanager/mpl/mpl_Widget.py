@@ -7,6 +7,7 @@ import matplotlib.colors as mcolors
 import matplotlib.dates as mdates
 import colorsys
 import numpy as np
+import time
 
 
 class MplCanvas(FigureCanvas):
@@ -14,7 +15,7 @@ class MplCanvas(FigureCanvas):
         self.fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = self.fig.add_subplot(111)
         self.data = data
-        self.pick_radius = 3
+        self.pick_radius = 6
         self.preflagged = False
         self.df_dict = {}
         #self.pick_event_occurred = pyqtSignal(bool)
@@ -38,6 +39,7 @@ class mplDataFramePlot(MplCanvas):
     def __init__(self, data, parent=None, width=5, height=4, dpi=100):
         super(mplDataFramePlot, self).__init__(data, parent, width, height, dpi)
         self.data = data
+        self.last_pick_time = 0
         self.fig.canvas.mpl_connect('pick_event', self.on_pick)
         
 
@@ -170,6 +172,10 @@ class mplDataFramePlot(MplCanvas):
         
         
     def on_pick(self, event):
+        current_time = time.time()
+        if current_time - self.last_pick_time < 0.5:  # 0.5 seconds threshold
+            return
+        self.last_pick_time = current_time
         thisline = event.artist
         xdata = thisline.get_xdata()
         ydata = thisline.get_ydata()
@@ -177,7 +183,7 @@ class mplDataFramePlot(MplCanvas):
         points = tuple(zip(xdata[ind], ydata[ind]))
         key = 0
         for k, v in self.df_dict.items():
-            if (v["line"] == thisline) | (v["unflagged"] == thisline)| (v["flagged"] == thisline):
+            if (v["line"] == thisline) | (v["unflagged"] == thisline) | (v["flagged"] == thisline):
                 key = k
         if key == 0:
             return
