@@ -1,35 +1,54 @@
-data_source_txt:
-  dobson:
-    path: "\\ad.pmodwrc.ch\\Institute\\Departments\\WRC\\OZONE\\A_Dobsons\\DataPostProcessing\\ProcessedData\\Level1\\051\\CalL01"
-    level: "Level1"
-    device_1: 
-        name: "051"
-        calibration: "CalL01"
-    device_2: 
-      name: "062"
-      calibration: "CalL01"
-    device_3:
-      name: "101"
-      calibtarion: "CalL01"
+brewer:
+  devices: ["040","072","156","163"]
+  path: "\\\\ad.pmodwrc.ch\\Institute\\Departments\\WRC\\OZONE\\B_Brewer\\DataPostProcessing\\ProcessedData"
+  save_path: "C:/Users/cedric.renda/Documents/test/brewer"
+  key : "Brewer"
+  header:
+  - Type
+  - Time(UTC)
+  - Temp
+  - Airmass
+  - Ozone
+  - Ozone_error
+  - SO2
+  - SO2_error
+  - Flag
+level: Level1
+cali : CalL01
+save_level: Level2
+save_cali: CalL02
 
-      
-  brewer:
-    path: "\\ad.pmodwrc.ch\\Institute\\Departments\\WRC\\OZONE\\B_Brewer\\DataPostProcessing\\ProcessedData\\Level1"
-    level: "Level1"
-    device_1:
-      name: "040"
-      calibtarion: "CalL01"
-    
-    device_2:
-      name: "072"
-      calibtarion: "CalL01"
-    
-    device_3:
-      name: "156"
-      calibtarion: "CalL01"
-
-    device_1:
-      name: "163"
-      calibtarion: "CalL01"
-
+  
+dobson:
+  devices: ["051","062","101"] 
+  key : "Dobson"
+  level: Level1
+  path: "\\\\ad.pmodwrc.ch\\Institute\\Departments\\WRC\\OZONE\\A_Dobsons\\DataPostProcessing\\ProcessedData"
+  save_path: "C:/Users/cedric.renda/Documents/test/dobson"
+  header : ["iii", 
+          "t",  
+          "yyyymmdd",
+          "ss",
+          "tt",
+          "timeC",
+          "rvalC",
+          "sdevC",
+          "timeD",
+          "rvalD",
+          "sdevD",
+          "timeA",
+          "rvalA",
+          "sdevA",
+          "flag1",
+          "flag2",
+          "flag3",
+          "muC",
+          "muD",
+          "muA",
+          "OzC",
+          "OzD",
+          "OzA",
+          "OzAD",
+          "OzCD",
+          "OzAC"]
 

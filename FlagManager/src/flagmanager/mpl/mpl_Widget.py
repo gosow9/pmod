@@ -1,4 +1,5 @@
-import sys
+import os
+import re
 from PySide6.QtCore import Signal, QObject
 from PySide6.QtWidgets import QApplication, QTableWidgetItem,QMainWindow, QVBoxLayout, QWidget, QSizePolicy
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas, NavigationToolbar2QT as NavigationToolbar
@@ -7,15 +8,30 @@ import matplotlib.colors as mcolors
 import matplotlib.dates as mdates
 import colorsys
 import numpy as np
+import time
+from ..config import ConfigHandler
 
 
 class MplCanvas(FigureCanvas):
     def __init__(self, data=None, parent=None, width=5, height=4, dpi=100):
+        self.handler_fm = ConfigHandler("flag_manager_config.yml")
+        self.handler_device = ConfigHandler("config.yml")
+        self.cali = self.handler_device.get("save_cali")
+        self.level = self.handler_device.get("save_level")
+        self.brewer_save_path = self.handler_device.get("brewer.save_path")
+        if not os.path.exists(self.brewer_save_path):
+            os.makedirs(self.brewer_save_path)
+            
+        self.dobson_save_path = self.handler_device.get("dobson.save_path")
+        if not os.path.exists(self.dobson_save_path):
+            os.makedirs(self.dobson_save_path)
+        
+        
         self.fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = self.fig.add_subplot(111)
         self.data = data
-        self.pick_radius = 3
-        self.preflagged = False
+        self.pick_radius = 6
+        self.preflagged = self.handler_fm.get("flags")["default_preflag"]
         self.df_dict = {}
         #self.pick_event_occurred = pyqtSignal(bool)
         
@@ -38,6 +54,7 @@ class mplDataFramePlot(MplCanvas):
     def __init__(self, data, parent=None, width=5, height=4, dpi=100):
         super(mplDataFramePlot, self).__init__(data, parent, width, height, dpi)
         self.data = data
+        self.last_pick_time = 0
         self.fig.canvas.mpl_connect('pick_event', self.on_pick)
         
 
@@ -51,9 +68,6 @@ class mplDataFramePlot(MplCanvas):
 
         x = df[df["flag"]==0]["date_num"]
         y = df[df["flag"]==0]["ozone"]
-        
-        x_flag = df[df["flag"]!=0]["date_num"]
-        y_flag = df[df["flag"]!=0]["ozone"]
         
         if self.preflagged:
             x_flag_show = df[df["flag"]!=0]["date_num"]
@@ -136,18 +150,32 @@ class mplDataFramePlot(MplCanvas):
         self.fig.canvas.draw()
  
  
-    def get_table_obj(self, table, combo, col_nm, save, path):
+    def get_table_obj(self, table, combo, col_nm, save):
         self.table = table
         self.combo = combo
         self.column_names = col_nm
         self.save_button = save
-        self.path = path
         self.save_button.clicked.connect(self.saveFileDialog)
         
         
     def saveFileDialog(self):
+        pattern1 = re.compile(r'^brewer(_\d+)?$', re.IGNORECASE)
+        pattern2 = re.compile(r'^dobson(_\d+)?$', re.IGNORECASE)
         for device, dic in self.data.items():
-                dic["obj"].save(dic["df"], self.path) 
+            if pattern1.match(device):
+                dic["obj"].save(dic["df"],
+                                str(dic["year"]), 
+                                dic["device_nr"], 
+                                self.brewer_save_path, 
+                                self.level,
+                                self.cali) 
+            elif pattern2.match(device):
+                dic["obj"].save(dic["df"], 
+                                str(dic["year"]),
+                                dic["device_nr"],
+                                self.dobson_save_path, 
+                                self.level,
+                                self.cali) 
     
         
     def update_table(self, key):
@@ -170,6 +198,10 @@ class mplDataFramePlot(MplCanvas):
         
         
     def on_pick(self, event):
+        current_time = time.time()
+        if current_time - self.last_pick_time < 0.2:  # 0.5 seconds threshold
+            return
+        self.last_pick_time = current_time
         thisline = event.artist
         xdata = thisline.get_xdata()
         ydata = thisline.get_ydata()
@@ -177,7 +209,7 @@ class mplDataFramePlot(MplCanvas):
         points = tuple(zip(xdata[ind], ydata[ind]))
         key = 0
         for k, v in self.df_dict.items():
-            if (v["line"] == thisline) | (v["unflagged"] == thisline)| (v["flagged"] == thisline):
+            if (v["line"] == thisline) | (v["unflagged"] == thisline) | (v["flagged"] == thisline):
                 key = k
         if key == 0:
             return
