@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.dates as mdates
 import datetime
-
+from ..config import ConfigHandler
 from .mainWindow import init, set_table_config, update_table
 #from .plot import (set_canvas, plot_dataframes, set_table_config, 
 #                        set_table_data)
@@ -20,16 +20,22 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget)
 
 class ApplicationWindow(QMainWindow):
     def __init__(self, parent=None):
+        self.handler_fm = ConfigHandler("flag_manager_config.yml")
+        self.handler_device = ConfigHandler("config.yml")
+        self.cali = self.handler_device.get("cali")
+        self.level = self.handler_device.get("level")
         QMainWindow.__init__(self, parent)
-        self.start_date = pd.Timestamp(2020,10,3)
+        self.start_date = pd.Timestamp(self.handler_fm.get("start_date")["year"],
+                                       self.handler_fm.get("start_date")["month"],
+                                       self.handler_fm.get("start_date")["day"])
         self.data = load_day(self.start_date.year,
                              self.start_date.month,
                              self.start_date.day,
                             "CalL01", 
                             "Level1")
-        self.save_path = "C:\\Users\\cedric.renda\\Documents"
-        self.show_dobson_flag = True
-        self.show_brewer_flag = True
+
+        self.show_dobson_flag = self.handler_fm.get("flags.default_dobson_flag")
+        self.show_brewer_flag = self.handler_fm.get("flags.default_brewer_flag")
         self.setWindowTitle('Flag Manager')
         
 
@@ -65,8 +71,9 @@ class ApplicationWindow(QMainWindow):
         self.data = load_day(year,
                             month, 
                             day, 
-                            "CalL01", 
-                            "Level1")
+                            self.cali, 
+                            self.level)
+
         if self.show_brewer_flag == False:
             new_dict = {k: v for k, v in self.data.items() if not k.startswith('Brewer')}
             self.data = new_dict

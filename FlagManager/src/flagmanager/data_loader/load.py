@@ -40,7 +40,7 @@ def get_files_of_type(start_folder, file_extension):
 
     return files
 
-def create_brewer_path(year, month, day, device, level, cal):
+def get_brewer_path(year, month, day, device, level, cal):
     n = r"\\"
     filename = "DS" + str(pd.Timestamp(year=year,month=month,day=day).dayofyear)+str(year%100)+"."+ device
     path = os.path.join(BREWER_PATH, level, device, cal, str(year), filename)
@@ -50,7 +50,7 @@ def create_brewer_path(year, month, day, device, level, cal):
         return False
     
     
-def create_dobson_path(year, month, day, device, level, cal):
+def get_dobson_path(year, month, day, device, level, cal):
     n = r"\\"
     filename = "AE" + str(year)+str(month).zfill(2)+str(day).zfill(2)+"."+ device
     path = DOBSON_PATH + n + level + n + device + n + cal + n + str(year) + n + filename
@@ -65,7 +65,7 @@ def load_day(year, month, day, cal, level, devices=devices):
     for key, val in devices.items():
         for device in val:
             if key == DOBSON_KEY:
-                path = create_dobson_path(year,month,day,device,level,cal)
+                path = get_dobson_path(year,month,day,device,level,cal)
                 if path:
                     dfs = Dobson(path)
                     dataframes[key+"_"+device]= {"df":dfs.df, 
@@ -74,11 +74,13 @@ def load_day(year, month, day, cal, level, devices=devices):
                                                  "day":day, 
                                                  "month":month, 
                                                  "year":year,
-                                                 "obj": dfs}
+                                                 "obj": dfs,
+                                                 "device_name":key,
+                                                 "device_nr": device}
                     
                     
             if key == BREWER_KEY: 
-                path = create_brewer_path(year,month,day,device,level,cal)
+                path = get_brewer_path(year,month,day,device,level,cal)
                 if path:
                     dfs = Brewer(path)
                     dataframes[key+"_"+device]= {"df":dfs.df, 
@@ -87,7 +89,9 @@ def load_day(year, month, day, cal, level, devices=devices):
                                                  "day":day, 
                                                  "month":month, 
                                                  "year":year,
-                                                 "obj":dfs}
+                                                 "obj":dfs,
+                                                 "device_name":key,
+                                                 "device_nr": device}
                     
     return dataframes
 

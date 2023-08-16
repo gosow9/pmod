@@ -16,6 +16,7 @@ default_header = handler.get("brewer.header")
 
 
 
+
 class Brewer:
     def __init__(self,  filepath: str, names: list = default_header):
         self.names = names
@@ -102,10 +103,19 @@ class Brewer:
 
         return df
     
-    def save(self, df, dir_path):
-        file_path = os.path.join(dir_path,self.file_name)
+    def save(self, df, year, name, dir_path, level, cali):
+        file_path = os.path.join(dir_path,
+                                 level, 
+                                 name,
+                                 cali, 
+                                 year,
+                                 self.file_name)
+        directory = os.path.dirname(file_path)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
         with open(file_path, 'w') as f:
             for l in self.full_header:
+                l = re.sub(r'CalL\d+', cali, l)
                 f.write(l+"\n")
             for ind, row in df.iterrows():
                 line = (

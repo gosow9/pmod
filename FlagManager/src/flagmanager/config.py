@@ -2,7 +2,7 @@ import yaml
 import os
 
 class ConfigHandler:
-    def __init__(self, config_path=None):
+    def __init__(self, file='config.yml', config_path=None):
         """
         Initialize the ConfigHandler with the path to the YAML configuration file.
         Args:
@@ -11,7 +11,7 @@ class ConfigHandler:
         if config_path is None:
             # Get the directory of this script
             current_dir = os.path.dirname(os.path.abspath(__file__))
-            config_path = os.path.join(current_dir, 'config.yml')
+            config_path = os.path.join(current_dir, file)
         
         self.config_path = config_path
         self.config_data = self._load_config()

@@ -7,7 +7,7 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QHBoxLayout,
                                QHeaderView, QLabel, QMainWindow, QSlider,
                                QTableWidget, QTableWidgetItem, QVBoxLayout,
                                QWidget, QCalendarWidget, QCheckBox,QPushButton)
-
+from ..config import ConfigHandler
 
 
 def init(self):
@@ -44,24 +44,21 @@ def figure(self):
     self.canvas.get_table_obj(self.table, 
                               self.combo, 
                               self.column_names, 
-                              self.save_button,
-                              self.save_path)
+                              self.save_button)
     self.toolbar = NavigationToolbar(self.canvas, self)
     
 def saveButton(self):
     self.save_button = QPushButton("Save")
 
-
-
-               
+          
     
 def checkbox(self):
     self.show_pre_flagged = QCheckBox('Show preflagged data', self)
-    self.show_pre_flagged.setChecked(False)
+    self.show_pre_flagged.setChecked(self.handler_fm.get("flags")["default_preflag"])
     self.show_brewer_checkbox = QCheckBox('Show Brewer devices', self)
-    self.show_brewer_checkbox.setChecked(True)
+    self.show_brewer_checkbox.setChecked(self.handler_fm.get("flags")["default_brewer_flag"])
     self.show_dobson_checkbox = QCheckBox('Show Dobson devices', self)
-    self.show_dobson_checkbox.setChecked(True)
+    self.show_dobson_checkbox.setChecked(self.handler_fm.get("flags")["default_dobson_flag"])
     
 
 

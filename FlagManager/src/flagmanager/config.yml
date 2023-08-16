@@ -1,7 +1,7 @@
 brewer:
   devices: ["040","072","156","163"]
   path: "\\\\ad.pmodwrc.ch\\Institute\\Departments\\WRC\\OZONE\\B_Brewer\\DataPostProcessing\\ProcessedData"
-  save_path: "\\\\ad.pmodwrc.ch\\Institute\\Departments\\WRC\\OZONE\\B_Brewer\\DataPostProcessing\\ProcessedData"
+  save_path: "C:/Users/cedric.renda/Documents/test/brewer"
   key : "Brewer"
   header:
   - Type
@@ -13,7 +13,10 @@ brewer:
   - SO2
   - SO2_error
   - Flag
-  level: Level1
+level: Level1
+cali : CalL01
+save_level: Level2
+save_cali: CalL02
 
   
 dobson:
@@ -21,6 +24,7 @@ dobson:
   key : "Dobson"
   level: Level1
   path: "\\\\ad.pmodwrc.ch\\Institute\\Departments\\WRC\\OZONE\\A_Dobsons\\DataPostProcessing\\ProcessedData"
+  save_path: "C:/Users/cedric.renda/Documents/test/dobson"
   header : ["iii", 
           "t",  
           "yyyymmdd",
@@ -47,3 +51,4 @@ dobson:
           "OzAD",
           "OzCD",
           "OzAC"]
+

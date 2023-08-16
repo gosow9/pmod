@@ -1,0 +1,9 @@
+start_date:
+  day: 3
+  month: 10
+  year: 2020
+
+flags: 
+  default_dobson_flag: True
+  default_brewer_flag: True
+  default_preflag: False
