@@ -173,7 +173,7 @@ class mplDataFramePlot(MplCanvas):
         
     def on_pick(self, event):
         current_time = time.time()
-        if current_time - self.last_pick_time < 0.5:  # 0.5 seconds threshold
+        if current_time - self.last_pick_time < 0.2:  # 0.5 seconds threshold
             return
         self.last_pick_time = current_time
         thisline = event.artist
