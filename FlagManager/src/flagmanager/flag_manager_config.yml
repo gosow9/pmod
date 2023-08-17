@@ -1,7 +1,7 @@
-start_date:
-  day: 3
-  month: 10
-  year: 2020
+start_date: today
+  #day: 3
+  #month: 10
+  #year: 2020
 
 flags: 
   default_dobson_flag: True

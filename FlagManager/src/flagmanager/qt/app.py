@@ -25,9 +25,15 @@ class ApplicationWindow(QMainWindow):
         self.cali = self.handler_device.get("cali")
         self.level = self.handler_device.get("level")
         QMainWindow.__init__(self, parent)
-        self.start_date = pd.Timestamp(self.handler_fm.get("start_date")["year"],
-                                       self.handler_fm.get("start_date")["month"],
-                                       self.handler_fm.get("start_date")["day"])
+        self.set_start_day()
+        
+                
+        
+        
+        
+        #self.start_date = pd.Timestamp(self.handler_fm.get("start_date")["year"],
+         #                              self.handler_fm.get("start_date")["month"],
+         #                              self.handler_fm.get("start_date")["day"])
         self.data = load_day(self.start_date.year,
                              self.start_date.month,
                              self.start_date.day,
@@ -53,7 +59,25 @@ class ApplicationWindow(QMainWindow):
         self.show_brewer_checkbox.stateChanged.connect(self.show_brewer)
         self.show_dobson_checkbox.stateChanged.connect(self.show_dobson)
 
-
+    def set_start_day(self):
+        config_value = self.handler_fm.get("start_date")
+        print(config_value.lower())
+        if config_value.lower() in ['today', 'current', 'now']:
+            print("in")
+            # Set the start_date to the current date if the config value is some variant of "today"
+            self.start_date = pd.Timestamp(pd.Timestamp.now().date())
+        else:
+            try:
+                # Attempt to retrieve the year, month, and day from the config file
+                year = config_value["year"]
+                month = config_value["month"]
+                day = config_value["day"]
+                
+                self.start_date = pd.Timestamp(year, month, day)
+            except (KeyError, TypeError, ValueError):
+                # This block will be executed if there's a KeyError (e.g., "year" not in config_value), 
+                # a TypeError (e.g., config_value is not subscriptable), or a ValueError (e.g., invalid date value)
+                raise ValueError("Invalid start_date configuration. Please provide a valid year, month, and day or set it to 'today'.")
         
     
     @Slot()
