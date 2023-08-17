@@ -15,6 +15,8 @@ brewer:
   - Flag
 level: Level1
 cali : CalL01
+autoflag_level: Level1
+autoflag_cali : CalL01
 save_level: Level2
 save_cali: CalL02
 
