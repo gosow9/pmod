@@ -30,8 +30,8 @@ def menubar(self):
     
 def calendar(self):
     self.calendar = QCalendarWidget()
-    self.calendar.setMinimumDate(QDate(2018, 1, 1))
-    self.calendar.setMaximumDate(QDate(2023, 1, 1))
+    self.calendar.setMinimumDate(QDate(2000, 1, 1))
+    self.calendar.setMaximumDate(QDate.currentDate())
     self.calendar.setGridVisible(True)
     self.calendar.setSelectedDate(QDate(self.start_date.year,
                              self.start_date.month,
