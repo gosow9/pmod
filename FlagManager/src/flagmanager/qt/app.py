@@ -61,9 +61,7 @@ class ApplicationWindow(QMainWindow):
 
     def set_start_day(self):
         config_value = self.handler_fm.get("start_date")
-        print(config_value.lower())
         if config_value.lower() in ['today', 'current', 'now']:
-            print("in")
             # Set the start_date to the current date if the config value is some variant of "today"
             self.start_date = pd.Timestamp(pd.Timestamp.now().date())
         else:
