@@ -63,23 +63,38 @@ def checkbox(self):
 
 
 def table(self):
-        self.table = QTableWidget()
-        self.column_names = ["Timestamp hour:min:sec", "Measured Ozone", "Flag"]
-        header = self.table.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.Stretch)
-        self.combo = QComboBox()
+    """
+    Initializes and configures the table widget with column names, headers, and data.
+    Populates a combo box with keys from the data.
+    If the data is empty, raises a ValueError.
+    """
+        
+    self.table = QTableWidget()
+    self.column_names = ["Timestamp hour:min:sec", "Measured Ozone", "Flag"]
+
+    header = self.table.horizontalHeader()
+    header.setSectionResizeMode(QHeaderView.Stretch)
+    
+    self.combo = QComboBox()
+    if self.data:
+        keys = list(self.data.keys())
+    
+        if keys:  # Check if keys list is non-empty
+            first_key = next(iter(self.data))
+            self.combo.addItems(keys)
+            set_table_config(self, self.data[first_key]["df"])
+
+
+      
+        
+def update_table(self):
+    self.combo.clear()
+    self.table.clear()
+    if self.data:
         keys = self.data.keys()
         first = next(iter(self.data))
         self.combo.addItems(keys)
         set_table_config(self, self.data[first]["df"])
-      
-        
-def update_table(self):
-    keys = self.data.keys()
-    first = next(iter(self.data))
-    self.combo.clear()
-    self.combo.addItems(keys)
-    set_table_config(self, self.data[first]["df"])
     
     
 def update_datapoint_table(self, key, point=None):
